@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  anserem:
+    image: anserem:1.0.0
+    container_name: "anserem"
+    environment:
+      - DYNV6_HOST=hydrofin.dynv6.net
+      - DYNV6_TOKEN=H6eixzkwmUTwW76r-52qiEVrws_k7b
+    restart: unless-stopped
+    network_mode: host
