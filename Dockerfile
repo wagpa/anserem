@@ -17,7 +17,7 @@ RUN go mod download -x
 COPY "." "./"
 
 # build the statically linked binary from the go source files
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o anserem main.go
 
 
 FROM scratch
