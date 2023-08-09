@@ -1,29 +1,18 @@
 FROM arm64v8/golang:1.20 AS builder
 
-# use a separate workspace to isolate the artifacts
-WORKDIR "/workspace"
+# Set destination for COPY
+WORKDIR /app
 
-# copy the go modules and manifests to download the dependencies
-COPY "go.mod" "go.mod"
-COPY "go.sum" "go.sum"
+# Download Go modules
+COPY go.mod go.sum ./
+RUN go mod download
 
-# cache the dependencies before copying the other source files so that this layer won't be invalidated on code changes
-RUN go mod download -x
+# Copy the source code. Note the slash at the end, as explained in
+# https://docs.docker.com/engine/reference/builder/#copy
+COPY *.go ./
 
-# copy all other files into the image to work on them
-COPY "." "./"
+# Build
+RUN CGO_ENABLED=0 GOOS=linux go build -o /anserem
 
-# build the statically linked binary from the go source files
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o anserem main.go
-
-
-FROM scratch
-
-# copy the raw binary into the new container
-COPY --from=builder "/workspace/anserem" "/anserem"
-
-# we run with minimum permissions as the nobody user
-USER nonroot:nonroot
-
-# just execute the raw binary without any wrapper
-ENTRYPOINT ["/anserem"]
+# Run
+CMD ["/anserem"]
