@@ -6,6 +6,7 @@ import (
 	"github.com/urfave/cli/v3"
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"net/mail"
 	"os"
@@ -99,6 +100,13 @@ func (o *Options) start(ctx *cli.Context) error {
 }
 
 func (o *Options) refresh() {
+
+	// TODO remove after debugging
+	if addrs, err := net.InterfaceAddrs(); err == nil {
+		for _, addr := range addrs {
+			log.Printf("found address %v", addr)
+		}
+	}
 
 	// send update request
 	res, err := http.Get(fmt.Sprintf(
