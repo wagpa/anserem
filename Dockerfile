@@ -1,7 +1,4 @@
-FROM arm64v8/golang AS builder
-
-# install ca-certificates to copy them into the container
-RUN apk --no-cache add ca-certificates
+FROM arm64v8/golang:1.20 AS builder
 
 # use a separate workspace to isolate the artifacts
 WORKDIR "/workspace"
