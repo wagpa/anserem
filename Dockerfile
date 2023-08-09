@@ -22,12 +22,8 @@ FROM scratch
 # copy the raw binary into the new container
 COPY --from=builder "/workspace/anserem" "/anserem"
 
-# copy the users and groups for the nobody user and group
-COPY --from=builder "/etc/passwd" "/etc/passwd"
-COPY --from=builder "/etc/group" "/etc/group"
-
 # we run with minimum permissions as the nobody user
-USER nobody:nobody
+USER nonroot:nonroot
 
 # just execute the raw binary without any wrapper
 ENTRYPOINT ["/anserem"]
